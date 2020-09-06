@@ -3,6 +3,7 @@ const bodyParser=require('body-parser');
 const app=express();
 const mongoose= require('mongoose');
 const Campground = require("./models/campground")
+const Comment   = require("./models/comment");
 const Seeds = require("./seeds")
 mongoose.connect('mongodb://localhost/x_camp', {useNewUrlParser: true,useUnifiedTopology: true });
 
@@ -23,7 +24,7 @@ app.get('/campgrounds',(req,res)=>{
         if(err){
             console.log(err)
         }else{
-            res.render("index",{campgrounds:campgrounds});
+            res.render("campgrounds/index",{campgrounds:campgrounds});
         }
 
     }
@@ -50,7 +51,7 @@ app.post('/campgrounds',(req,res)=>{
        
 });
 app.get('/campgrounds/new',(req,res)=>{
-    res.render("new");
+    res.render("campgrounds/new");
 })
 app.get('/campgrounds/:id',(req,res)=>{
     Campground.findById(req.params.id).populate('comments').exec((err,foundCampground)=>{
@@ -58,10 +59,33 @@ app.get('/campgrounds/:id',(req,res)=>{
             console.log(err);
         }else{
             console.log(foundCampground)
-            res.render("show",{campground:foundCampground});
+            res.render("campgrounds/show",{campground:foundCampground});
         }
     })
     
+})
+
+//Comment Routes
+app.get('/campgrounds/:id/comments/new',(req,res)=>{
+    res.render('comments/new',{id:req.params.id})
+})
+app.post('/campgrounds/:id/comments',(req,res)=>{
+    Campground.findById(req.params.id,(err,foundCampground)=>{
+        if(err){
+            console.log(err)
+            res.redirect('/campgrounds')
+        }else{
+            Comment.create(req.body.comment,(err,comment)=>{
+                if(err){
+                    console.log(err)
+                }else{
+                    foundCampground.comments.push(comment);
+                    foundCampground.save();
+                    res.redirect('/campgrounds/'+foundCampground._id)
+                }
+            })
+        }
+    })
 })
 
 app.listen(3000,()=>{
