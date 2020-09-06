@@ -12,7 +12,7 @@ mongoose.connect('mongodb://localhost/x_camp', {useNewUrlParser: true,useUnified
 
 app.set('view engine','ejs');
 app.use(bodyParser.urlencoded({extended:true}));
-
+app.use(express.static(__dirname+"/public"))
 
 Seeds();
 
