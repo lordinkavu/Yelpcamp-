@@ -27,7 +27,7 @@ async function seedDB(){
         await Comment.remove({});
         console.log('Comments removed');
 
-        for(const seed of seeds) {
+        /* for(const seed of seeds) {
             let campground = await Campground.create(seed);
             console.log('Campground created');
             let comment = await Comment.create(
@@ -40,7 +40,7 @@ async function seedDB(){
             campground.comments.push(comment);
             campground.save();
             console.log('Comment added to campground');
-        }
+        } */
     } catch(err) {
         console.log(err);
     }
