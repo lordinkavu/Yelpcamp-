@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const app = express();
 const passport = require("passport");
 const localStrategy = require("passport-local");
+const methodOverride = require('method-override')
 
 const mongoose = require("mongoose");
 const Campground = require("./models/campground");
@@ -21,6 +22,7 @@ mongoose.connect("mongodb://localhost/x_camp", {
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/public"));
+app.use(methodOverride("_method"))
 
 // Passport configuration
 app.use(
@@ -43,7 +45,7 @@ app.use("/campgrounds/:id/comments", commentRoutes);
 app.use(indexRoutes);
 app.use("/campgrounds", campgroundRoutes);
 
-Seeds();
+//Seeds();
 
 app.listen(3000, () => {
   console.log("listening from port 3000");
