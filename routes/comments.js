@@ -26,6 +26,23 @@ router.post("/", isLoggedIn, (req, res) => {
     }
   });
 });
+/*
+function checkCommentOwnership(req,res,next){
+  if(req.isAuthenticated()){
+    Campground.findById(req.params.id,(err,foundCampground)=>{
+      if(err){
+        res.redirect('back')
+      }else{
+        if(foundCampground.comments.author.id.equals(req.user._id)){
+          next()
+        }else{
+          res.redirect('back')
+        }
+      }
+    })
+  }
+}
+*/
 function isLoggedIn(req, res, next) {
   if (req.isAuthenticated()) {
     return next();

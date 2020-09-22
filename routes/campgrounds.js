@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Campground = require("../models/campground");
 const Comment = require("../models/comment");
+
 router.get("/", (req, res) => {
   Campground.find({}, (err, campgrounds) => {
     if (err) {
@@ -45,7 +46,7 @@ router.get("/:id", (req, res) => {
     });
 });
 
-router.get('/:id/edit',(req,res)=>{
+router.get('/:id/edit', checkCampgroundOwnership,(req,res)=>{
    Campground.findById(req.params.id,(err,foundCampground)=>{
      if(err){
        res.redirect('/')
@@ -55,7 +56,7 @@ router.get('/:id/edit',(req,res)=>{
    })
   
 })
-router.put('/:id',(req,res)=>{
+router.put('/:id', checkCampgroundOwnership,(req,res)=>{
   Campground.findByIdAndUpdate(req.params.id,req.body.campground,(err,updatedCampground)=>{
     if(err){
       res.redirect('/campgrounds')
@@ -64,15 +65,32 @@ router.put('/:id',(req,res)=>{
     }
   })
 })
-router.delete('/:id',(req,res)=>{
-   Campground.findByIdAndRemove(req.params.id,(err)=>{
-     if(err){
-       res.redirect('/campgrounds')
-     }else{
-       res.redirect('/campgrounds')
-     }
-   })
+router.delete('/:id', checkCampgroundOwnership,async (req,res)=>{
+    try {
+    let foundCampground = await Campground.findById(req.params.id);
+    await foundCampground.remove();
+    res.redirect("/campgrounds");
+  } catch (error) {
+    console.log(error.message);
+    res.redirect("/campgrounds");
+  }
+   
 })
+function checkCampgroundOwnership(req,res,next){
+  if(req.isAuthenticated()){
+    Campground.findById(req.params.id,(err,foundCampground)=>{
+      if(err){
+        res.redirect('back')
+      }else{
+        if(foundCampground.author.id.equals(req.user._id)){
+          next()
+        }else{
+          res.redirect('back')
+        }
+      }
+    })
+  }
+}
 function isLoggedIn(req, res, next) {
   if (req.isAuthenticated()) {
     return next();
