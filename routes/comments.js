@@ -26,23 +26,34 @@ router.post("/", isLoggedIn, (req, res) => {
     }
   });
 });
-/*
+router.delete('/:id',checkCommentOwnership,async(req,res)=>{
+  try {
+    await Comment.remove({_id: req.params.id})
+    res.redirect('back')
+  } catch (error) {
+    console.log(error.message);
+    res.redirect("back");
+  }
+})
 function checkCommentOwnership(req,res,next){
   if(req.isAuthenticated()){
-    Campground.findById(req.params.id,(err,foundCampground)=>{
+    
+     Comment.findById(req.params.id,(err,foundComment)=>{
       if(err){
         res.redirect('back')
       }else{
-        if(foundCampground.comments.author.id.equals(req.user._id)){
+        if(foundComment.author.id.equals(req.user._id)){
           next()
         }else{
           res.redirect('back')
         }
       }
-    })
+    }) 
+  }else{
+    res.redirect('back')
   }
 }
-*/
+
 function isLoggedIn(req, res, next) {
   if (req.isAuthenticated()) {
     return next();

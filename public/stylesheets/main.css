@@ -4,6 +4,6 @@
 .thumbnail{
     padding:0;
 }
-#deleteform{
-    display: inline
+.deleteform{
+    display: inline 
 }
