@@ -16,10 +16,7 @@ const commentRoutes = require("./routes/comments.js"),
   campgroundRoutes = require("./routes/campgrounds.js"),
   indexRoutes = require("./routes/index.js");
 
-mongoose.connect("mongodb+srv://Gautham:blumblumbley2k%219@cluster0.rem36.mongodb.net/yelp_camp?retryWrites=true&w=majority", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+mongoose.connect('mongodb+srv://Gautham:blum@cluster0.rem36.mongodb.net/<dbname>?retryWrites=true&w=majority')
 app.use(flash());
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -50,7 +47,7 @@ app.use(indexRoutes);
 app.use("/campgrounds", campgroundRoutes);
 
 //Seeds();
-
-app.listen(3000, () => {
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
   console.log("listening from port 3000");
 });
