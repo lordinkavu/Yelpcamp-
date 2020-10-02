@@ -1,6 +1,8 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
+const flash = require('connect-flash');
+
 const passport = require("passport");
 const localStrategy = require("passport-local");
 const methodOverride = require('method-override')
@@ -18,7 +20,7 @@ mongoose.connect("mongodb://localhost/x_camp", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
-
+app.use(flash());
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/public"));
@@ -39,6 +41,8 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 app.use((req, res, next) => {
   res.locals.currentUser = req.user;
+  res.locals.errormessage= req.flash("error");
+  res.locals.successmessage = req.flash('success');
   next();
 });
 app.use("/campgrounds/:id/comments", commentRoutes);

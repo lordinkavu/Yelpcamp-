@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/user");
 const passport = require("passport");
+const middleware = require('../middleware')
 router.get("/", (req, res) => {
   res.render("landing");
 });
@@ -15,9 +16,11 @@ router.post("/register", (req, res) => {
     req.body.password,
     (err, user) => {
       if (err) {
-        res.render("user/register");
+        req.flash('error',err.message)
+        res.redirect("/register");
       }
       passport.authenticate("local")(req, res, () => {
+        req.flash('success', " Successfully registered as" + user.username)
         res.redirect("/campgrounds");
       });
     }
@@ -32,18 +35,16 @@ router.post(
   passport.authenticate("local", {
     successRedirect: "/campgrounds",
     failureRedirect: "/login",
+    failureFlash: true,
+    successFlash: 'Welcome !'
   }),
   (req, res) => {}
 );
 
 router.get("/logout", (req, res) => {
   req.logout();
+  req.flash('success', 'Logged out successfully!')
   res.redirect("/campgrounds");
 });
-function isLoggedIn(req, res, next) {
-  if (req.isAuthenticated()) {
-    return next();
-  }
-  res.redirect("/login");
-}
+
 module.exports = router;
