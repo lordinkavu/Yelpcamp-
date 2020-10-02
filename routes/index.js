@@ -20,7 +20,7 @@ router.post("/register", (req, res) => {
         res.redirect("/register");
       }
       passport.authenticate("local")(req, res, () => {
-        req.flash('success', " Successfully registered as" + user.username)
+        req.flash('success', " Successfully registered as " + user.username)
         res.redirect("/campgrounds");
       });
     }
