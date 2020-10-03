@@ -16,7 +16,7 @@ const commentRoutes = require("./routes/comments.js"),
   campgroundRoutes = require("./routes/campgrounds.js"),
   indexRoutes = require("./routes/index.js");
 
-mongoose.connect('mongodb+srv://Gautham:blum@cluster0.rem36.mongodb.net/<dbname>?retryWrites=true&w=majority')
+mongoose.connect('mongodb+srv://<username>:<password>@cluster0.rem36.mongodb.net/<dbname>?retryWrites=true&w=majority')
 app.use(flash());
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
